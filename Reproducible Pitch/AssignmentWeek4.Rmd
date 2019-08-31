@@ -1,0 +1,55 @@
+---
+title: "DDP-Week4-Assignment"
+author: "Kuldeep SIngh Meena"
+date: "August 31, 2019"
+runtime: shiny
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Overview
+
+This is a RStudio shiny application developed as a part of Developing Data Products course under Data Science. The application summarizes Call Center Measurements for an entire call center(includes call management and quality management), as well as by subgroups made up of three teams. 
+
+This is the initial attempt at creating a broader reporting format for Call Center Management Reports. Eventually the goal is to have hyperlinks within the App that will lead to more detailed information for each of the measures as well as each Team.
+
+## The Application includes the following:
+
+- Form of Input used: Radio Button
+- Reactive output displayed as a result of server calculations: The user (call Center Manager) can select one or more teams to compare Performance Results 
+- The server.R and ui.R codes are posted on github at: <https://github.com/kuldeep3005/Developing-Data-Products-Week-4-Assignment>
+- The App can be found at: <https://kuldeep3005.shinyapps.io/Week4Assignment/>
+
+## R Code for the Application
+
+```{r, echo = TRUE, warning=FALSE}
+# Ui.R code
+library(shiny)
+Perform <- read.csv("CCP.csv")
+fluidPage(
+  checkboxGroupInput("variable", "Variables:",
+                     c("Overall Results" = "Overall",
+                       "Team 1 Results" = "Team1",
+                       "Team 2 Results" = "Team2",
+                       "Team 3 Results" = "Team3")),
+  tableOutput("data")
+)
+# Server.R code
+function(input, output, session) {
+  output$data <- renderTable({
+    Perform[, c("Performance.Measures", input$variable), drop = FALSE]
+  }, rownames = TRUE)
+}
+```
+
+## Table of Data 
+
+```{r, echo=FALSE, warning=FALSE}
+Perform <- read.csv("CCP.csv")
+Perform
+```
+
+This is the table of data that was used for this application.
